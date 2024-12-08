@@ -170,7 +170,7 @@ abstract class AbstractHttpHandler
             /** @var RideStatus[] $rideStatuses */
             $rideStatuses = [];
             try {
-                $stmt = $tx->prepare('SELECT * FROM ride_statuses WHERE ride_id = ? ORDER BY created_at');
+                $stmt = $tx->prepare('SELECT id, ride_id, status, created_at FROM ride_statuses WHERE ride_id = ? ORDER BY created_at');
                 $stmt->execute([$ride->id]);
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($result as $row) {
