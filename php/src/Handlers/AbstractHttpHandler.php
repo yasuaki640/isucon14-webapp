@@ -109,14 +109,14 @@ abstract class AbstractHttpHandler
         } else {
             // 初回利用クーポンを最優先で使う
             $stmt = $db->prepare(
-                'SELECT * FROM coupons WHERE user_id = ? AND code = \'CP_NEW2024\' AND used_by IS NULL'
+                'SELECT discount FROM coupons WHERE user_id = ? AND code = \'CP_NEW2024\' AND used_by IS NULL'
             );
             $stmt->execute([$userId]);
             $coupon = $stmt->fetch(PDO::FETCH_ASSOC);
             // 無いなら他のクーポンを付与された順番に使う
             if ($coupon === false) {
                 $stmt = $db->prepare(
-                    'SELECT * FROM coupons WHERE user_id = ? AND used_by IS NULL ORDER BY created_at LIMIT 1'
+                    'SELECT discount FROM coupons WHERE user_id = ? AND used_by IS NULL ORDER BY created_at LIMIT 1'
                 );
                 $stmt->execute([$userId]);
                 $coupon = $stmt->fetch(PDO::FETCH_ASSOC);
