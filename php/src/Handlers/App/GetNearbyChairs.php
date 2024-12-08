@@ -81,11 +81,11 @@ class GetNearbyChairs extends AbstractHttpHandler
         ]);
         try {
             $this->db->beginTransaction();
-            $stmt = $this->db->prepare('SELECT * FROM chairs');
+            $stmt = $this->db->prepare('SELECT * FROM chairs WHERE is_active = true');
             $stmt->execute();
-            $chairs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $activeChairs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $nearbyChairs = [];
-            foreach ($chairs as $chair) {
+            foreach ($activeChairs as $chair) {
                 $chair = new Chair(
                     id: $chair['id'],
                     ownerId: $chair['owner_id'],
@@ -96,9 +96,6 @@ class GetNearbyChairs extends AbstractHttpHandler
                     createdAt: $chair['created_at'],
                     updatedAt: $chair['updated_at']
                 );
-                if (!$chair->isActive) {
-                    continue;
-                }
                 $stmt = $this->db->prepare('SELECT * FROM rides WHERE chair_id = ? ORDER BY created_at DESC');
                 $stmt->execute([$chair->id]);
                 $skip = false;
